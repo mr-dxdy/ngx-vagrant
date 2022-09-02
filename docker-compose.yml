@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  ngx-vagrant:
+    image: mrdxdy/ngx-vagrant:1.0.0
+    restart: unless-stopped
+    volumes:
+      - ./hosted:/ngx-vagrant/hosted
+    ports:
+      - '8070:80'

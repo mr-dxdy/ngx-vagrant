@@ -42,3 +42,5 @@ luac.out
 # Custom
 .vagrant/
 
+# Temp files
+/hosted

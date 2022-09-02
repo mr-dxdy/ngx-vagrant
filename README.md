@@ -5,18 +5,9 @@ Self-hosted Vagrant boxes with versions by [nginx](https://nginx.org/) + [lua](h
 
 About blog post `ru` [Собственное хранилище версированных Vagrant боксов с помощью Nginx и Lua](https://maks.live/articles/drugoe/sobstvennoe-khranilishche-versirovannykh-vagrant-boksov-s-pomoshchiu-nginx-i-lua/)
 
-### Try it yourself
-With vagrant and virtualbox
-
-```
-$ git clone git@github.com:Samael500/ngx-vagrant.git
-$ cd ngx-vagrant
-$ vagrant up
-```
-
 ### Example result
 
-`GET http://10.1.1.111/example`
+`GET http://your-hostname/example`
 
 Example result:
 ```json
@@ -89,5 +80,11 @@ In vagrant file just write:
 ```Ruby
     config.vm.box = "example"
     config.vm.box_version = "1.7"
-    config.vm.box_url = "http://10.1.1.111/example"
+    config.vm.box_url = "http://your-hostname/example"
+```
+
+### Usage in docker
+
+```
+docker-compose up -d
 ```

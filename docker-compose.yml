@@ -2,7 +2,7 @@ version: '3'
 
 services:
   ngx-vagrant:
-    image: mrdxdy/ngx-vagrant:1.0.0
+    image: mrdxdy/ngx-vagrant:1.0.1
     restart: unless-stopped
     volumes:
       - ./hosted:/ngx-vagrant/hosted

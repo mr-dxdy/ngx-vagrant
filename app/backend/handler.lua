@@ -1,5 +1,5 @@
 -- Get location path
-local hash = 'sha1'
+local hash_algorithm = 'sha1'
 local box_root = ngx.var.box_prefix .. ngx.var.box_name .. '/'
 local posix = require "posix"
 local glob = posix.glob (box_root .. '*.box')
@@ -10,14 +10,48 @@ if not glob then
     return ngx.exit (ngx.HTTP_NOT_FOUND)
 end
 
+function calculate_hash (filepath)
+  -- Calc hashum of given filepath
+  local command = string.format ('%ssum %s | cut -d " " -f1', hash_algorithm, filepath)
+  local hashsum = assert (io.popen (command, 'r'))
+  local result = string.gsub (hashsum:read ('*a'), '\n', '')
+  hashsum:close ()
+  return result
+end
+
+function convert_to_cache_path (filepath)
+  return string.format("%s.%s", filepath, hash_algorithm)
+end
+
+function get_hash_from_cache (filepath)
+  local cache_path = convert_to_cache_path(filepath)
+  local file = io.open(cache_path, "r")
+
+  if file == nil then return nil end
+  local hash = file:read('*a')
+  file:close()
+
+  return hash
+end
+
+function set_hash_in_cache(filepath, hashsum)
+  local cache_path = convert_to_cache_path(filepath)
+  local file = assert(io.open(cache_path, "w"))
+
+  file:write(hashsum)
+  file:close()
+
+  return true
+end
 
 function get_hash (filepath)
-    -- Calc hashum of given filepath
-    local command = string.format ('%ssum %s | cut -d " " -f1', hash, filepath)
-    local hashsum = assert (io.popen (command, 'r'))
-    local result = string.gsub (hashsum:read ('*a'), '\n', '')
-    hashsum:close ()
-    return result
+  local cached_hash = get_hash_from_cache(filepath)
+  if cached_hash ~= nil then return cached_hash end
+
+  local hash = calculate_hash(filepath)
+  set_hash_in_cache(filepath, hash)
+
+  return hash
 end
 
 
